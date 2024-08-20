@@ -1,0 +1,37 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+  }
+  
+  body {
+    display: grid;
+    grid-template:
+      'header header header' 100px
+      'left-colmun main right-colmun' auto
+      'footer footer footer' 40px / 0px auto 200px;
+  }
+  
+  header {
+    grid-area: header;
+    background-color: lightblue;
+    text-align: center;
+  }
+  aside#left {
+    grid-area: left-column;
+    background-color: lightsalmon;
+  }
+  main {
+    height: calc(100vh - 80px);
+    grid-area: main;
+    background-color: lightgreen;
+  }
+  aside#right {
+    grid-area: right-colmun;
+    background-color: lightsalmon;
+    text-align: center;
+  }
+  footer {
+    grid-area: footer;
+    background-color: lightblue;
+  }
+  
