@@ -6,7 +6,7 @@ import { serveDir } from 'http/file_server.ts'
 /**
  * APIリクエストを処理する
  */
-const kv = new  DEnoKV();
+const kv = new  DenoKV();
 
 serve(async(req) => {
   // publicフォルダ内にあるファイルを返す
