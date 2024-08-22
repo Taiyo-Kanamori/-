@@ -6,14 +6,13 @@ import { serveDir } from 'http/file_server.ts'
 /**
  * APIリクエストを処理する
  */
-const kv = new  DenoKV();
+const kv = await Deno.openKv();
 
 serve(async(req) => {
   // publicフォルダ内にあるファイルを返す
   const url = new URL(req.url);
 
   if (req.method === "POST" && url.pathname === "/record-time") {
-    const kv = await Deno.openKv();
     console.log(kv);
 
     const{type,time} = await req.json();
