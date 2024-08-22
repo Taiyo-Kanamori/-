@@ -179,7 +179,26 @@
             recordTime('sleep');
         });
 
+        //時間取得
+        async function getAllTimes() {
+          try {
+            const response = await fetch('/get-times');
+            if (response.ok) {
+              const times = await response.json();
+              document.getElementById('response').innerText = JSON.stringify(times, null, 2);
+            } else {
+              document.getElementById('response').innerText = 'エラーが発生しました。';
+            }
+          } catch (error) {
+            console.error('Error getting times:', error);
+          }
+        }
+
+        document.getElementById('get-times').addEventListener('click', () => {
+          getAllTimes();
+        });
         //記録削除
+        /*
         async function deleteAllTimes() {
           const response = await fetch('/delete-all', {
             method: 'POST',
@@ -197,7 +216,7 @@
         document.getElementById('delete-all').addEventListener('click',() => {
           deleteAllTimes();
         });
-  
+        */
       </script>
     </header>
 
@@ -207,6 +226,7 @@
     </aside>-->
     <main>
       <button id="delete-all">記録削除</button>
+      <div id="get-times"></div>
       <div id="response"></div>
       <!--<button id="kiroku-button">記録</button>
       <p>アチーブメント</p>-->
