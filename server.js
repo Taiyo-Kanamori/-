@@ -20,8 +20,8 @@ serve(async(req) => {
       const month = String(timestamp.getMonth() + 1); // 月は0から始まるので +1
       const day = String(timestamp.getDate());
       const clockTime = timestamp.toTimeString().split(' ')[0]; // HH:MM:SS形式
-      const key = [year, month, day, clockTime];
-      await kv.set(key, time);
+      const key = [year, month, day, clockTime, type];
+      await kv.set(key, clockTime);
 
       return new Response(JSON.stringify({ message: `${time},${type}時間が記録されました。` }), {
         status: 200,
