@@ -11,7 +11,7 @@ body {
     "left main right"
     "footer footer footer";
   grid-template-rows: auto 1fr auto;
-  grid-template-columns: 1fr 2fr 1fr;
+  grid-template-columns: 0px 2fr 200px;
   height: 100vh;
   font-family: Arial, sans-serif;
 }
