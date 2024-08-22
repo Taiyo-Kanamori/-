@@ -24,7 +24,7 @@ serve(async(req) => {
         headers: { "Content-Type": "application/json" },
       });
     } catch (error) {
-      console.error("Error processing request:", error);
+      console.error("Error processing request:", error.message);
       return new Response(JSON.stringify({ message: "サーバーエラーが発生しました。" }), {
         status: 500,
         headers: { "Content-Type": "application/json" },
