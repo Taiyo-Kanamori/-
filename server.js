@@ -67,11 +67,10 @@ serve(async(req) => {
   }
 
   //記録削除
-  /*
   if (req.method === "POST" && url.pathname === "/delete-all") {
     try {
       // キーの取得と削除処理
-      const iterator = kv.list({ prefix: '' }); // プレフィックスが空で全てのキーを取得
+      const iterator = kv.list({ prefix: ["2024"] }); // プレフィックスが空で全てのキーを取得
       for await (const { key } of iterator) {
         await kv.delete(key);
       }
@@ -89,7 +88,7 @@ serve(async(req) => {
       });
     }
   }
-  */
+
 
   return serveDir(req, {
     fsRoot: 'public',
