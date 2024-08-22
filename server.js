@@ -14,10 +14,11 @@ serve(async(req) => {
 
   if (req.method === "POST" && url.pathname === "/record-time") {
     const { type, time } = await req.json();
-    const timestamp = new Date().toISOString();
-    const key = `${type}Time_${timestamp}`;
-
-    await kv.set(key, time);
+    if (type === "wake") {
+      await kv.set("wakeTime", time);
+    } else if (type === "sleep") {
+      await kv.set("sleepTime", time);
+    }
 
     return new Response(JSON.stringify({ message: `${type}時間が記録されました。` }), {
       status: 200,
