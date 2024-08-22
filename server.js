@@ -15,8 +15,12 @@ serve(async(req) => {
 
     try {
       const { type, time } = await req.json();
-      const timestamp = new Date().toISOString();
-      const key = [`${timestamp}Times`];
+      const now = new Date();
+      const year = now.getFullYear();
+      const month = String(now.getMonth() + 1).padStart(2, '0'); // 月は0ベースなので+1
+      const day = String(now.getDate()).padStart(2, '0');
+      const timestamp = `${year}-${month}-${day}`;
+      const key = [`${timestamp}-${type}Times`];
 
       await kv.set(key, time);
 
