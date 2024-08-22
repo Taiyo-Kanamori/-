@@ -63,58 +63,61 @@
       <button onclick="fullscreen()">全画面</button>
       <button id="recordwake">起床時間を記録</button>
       <button id="recordsleep">就寝時間を記録</button>
-      <script>
-        function fullscreen(){
-          //全画面表示
-          console.log("fullscreen");
-          document.getElementById('modal-overlay').style.display = 'block';
-          document.getElementById('modal').style.display = 'block';
-          document.getElementById('overlay').style.display = 'block';
-          /*
-          document.getElementById('fullscreenover').style.display = 'block';
-          document.getElementById('fullscreen').style.display = 'block';
-          */
+    </header>
 
-          /*const elem = document.documentElement; // 全画面表示にする要素（ここではドキュメント全体）
-          if (elem.requestFullscreen) {
-            elem.requestFullscreen();
-          } else if (elem.mozRequestFullScreen) { // Firefox
-            elem.mozRequestFullScreen();
-          } else if (elem.webkitRequestFullscreen) { // Chrome, Safari and Opera
-            elem.webkitRequestFullscreen();
-          } else if (elem.msRequestFullscreen) { // IE/Edge
-            elem.msRequestFullscreen();
-          }*/
-        }
+    <script>
+      function fullscreen(){
+        //全画面表示
+        console.log("fullscreen");
+        document.getElementById('modal-overlay').style.display = 'block';
+        document.getElementById('modal').style.display = 'block';
+        document.getElementById('overlay').style.display = 'block';
+        /*
+        document.getElementById('fullscreenover').style.display = 'block';
+        document.getElementById('fullscreen').style.display = 'block';
+        */
+
+        /*
+        const elem = document.documentElement; // 全画面表示にする要素（ここではドキュメント全体）
+        if (elem.requestFullscreen) {
+          elem.requestFullscreen();
+        } else if (elem.mozRequestFullScreen) { // Firefox
+          elem.mozRequestFullScreen();
+        } else if (elem.webkitRequestFullscreen) { // Chrome, Safari and Opera
+          elem.webkitRequestFullscreen();
+        } else if (elem.msRequestFullscreen) { // IE/Edge
+          elem.msRequestFullscreen();
+        }*/
+      }
         
-        function updateTime() {
-          //現在時刻表示
-          const now = new Date();
-          const hours = String(now.getHours()).padStart(2, '0');
-          const minutes = String(now.getMinutes()).padStart(2, '0');
-          const seconds = String(now.getSeconds()).padStart(2, '0');
-          document.getElementById('current-time').textContent = `${hours}:${minutes}:${seconds}`;
+      function updateTime() {
+        //現在時刻表示
+        const now = new Date();
+        const hours = String(now.getHours()).padStart(2, '0');
+        const minutes = String(now.getMinutes()).padStart(2, '0');
+        const seconds = String(now.getSeconds()).padStart(2, '0');
+        document.getElementById('current-time').textContent = `${hours}:${minutes}:${seconds}`;
+      }
+      updateTime();
+      setInterval(updateTime, 1000);
+
+
+      let settotalseconds = null;
+      let difseconds;
+      function differencetime(){
+        //決定ボタンを押されたとき設定時間の変更
+        let settime = document.getElementById('set-time').value;
+        if (settime){
+          let [sethours, setminutes] = settime.split(':').map(Number);
+          settotalseconds = sethours*3600+setminutes*60;
         }
-        updateTime();
-        setInterval(updateTime, 1000);
-
-
-        let settotalseconds = null;
-        let difseconds;
-        function differencetime(){
-          //決定ボタンを押されたとき設定時間の変更
-          let settime = document.getElementById('set-time').value;
-          if (settime){
-            let [sethours, setminutes] = settime.split(':').map(Number);
-            settotalseconds = sethours*3600+setminutes*60;
-          }
-          else{
-            settotalseconds = null;
-          }
+        else{
+          settotalseconds = null;
         }
+      }
 
-        function diftime() {
-          //残り時間の計算、表示
+      function diftime() {
+        //残り時間の計算、表示
           let now = new Date();
           let hours = now.getHours();
           let minutes = now.getMinutes();
@@ -150,6 +153,7 @@
         }
         setInterval(diftime, 1000);
 
+        //時間記録
         async function recordTime(type) {
           const currentTime = new Date().toISOString();
           try {
@@ -180,9 +184,6 @@
         });
 
         //時間取得
-        document.getElementById('get-times').addEventListener('click', () => {
-          getAllTimes();
-        });
         async function getAllTimes() {
           try {
             const response = await fetch('/get-times');
@@ -196,7 +197,9 @@
             console.error('Error getting times:', error);
           }
         }
-
+        document.getElementById('get-times').addEventListener('click', () => {
+          getAllTimes();
+        });
         
         //記録削除
         /*
@@ -219,8 +222,6 @@
         });
         */
       </script>
-    </header>
-
     <!--
     <aside id="left">
       <p>左カラム</p>
