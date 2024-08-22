@@ -11,6 +11,7 @@ const kv = await Deno.openKv();
 serve(async(req) => {
   // publicフォルダ内にあるファイルを返す
   const url = new URL(req.url);
+  //時間記録
   if (req.method === "POST" && url.pathname === "/record-time") {
     try {
       const { type, time } = await req.json();
@@ -30,8 +31,22 @@ serve(async(req) => {
       });
     }
   }
+  //時間取得
+  if (req.method === "GET" && url.pathname === "/get-times") {
+      const iterator = kv.list(); // プレフィックスを設定しない場合、全てのキーを取得
+      const times = [];
+      for await (const { key, value } of iterator) {
+        times.push({ key, value });
+      }
+
+      return new Response(JSON.stringify(times), {
+        status: 200,
+        headers: { "Content-Type": "application/json" },
+      });
+  }
 
   //記録削除
+  /*
   if (req.method === "POST" && url.pathname === "/delete-all") {
     try {
       // キーの取得と削除処理
@@ -53,6 +68,7 @@ serve(async(req) => {
       });
     }
   }
+  */
 
   return serveDir(req, {
     fsRoot: 'public',
