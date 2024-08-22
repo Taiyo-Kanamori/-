@@ -22,6 +22,13 @@ serve(async(req) => {
       const timestamp = `${year}-${month}-${day}`;
       const key = [`${timestamp}-${type}Times`];
 
+      // 現在の記録を取得
+      const currentData = await kv.get(key);
+      const times = currentData?.value || [];
+
+      // 新しい記録を追加
+      times.push(time);
+
       await kv.set(key, time);
 
       return new Response(JSON.stringify({ message: `${time},${type}時間が記録されました。` }), {
