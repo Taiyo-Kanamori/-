@@ -46,7 +46,7 @@ serve(async(req) => {
       for await (const { key, value } of iterator) {
         let aa = key.join('-');//結合
         let bb = aa+value;
-        times.push([bb]);
+        times.push(bb);
       
       }
 
