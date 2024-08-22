@@ -44,12 +44,16 @@
         }
     </style>
   </head>
-  
+
   <body>
     <div id="modal-overlay" class="modal-overlay"></div>
     <div id="modal" class="modal"></div>
     <div id="overlay" class="overlay"></div>
-  
+    
+    <!--
+    <div id = "fullscreen" class = "fullscreen" style = "display:none;"></div>
+    <div id = "fullscreenover" class ="fullscreenover" style = "display:none;"></div>
+    -->
     <header>
       <h1>のこり時間</h1>
       <h1 id="dif-time"></h1>
@@ -58,10 +62,7 @@
       <button onclick="differencetime()">決定</button>
       <button onclick="fullscreen()">全画面</button>
       <button id="recordtime">時間を記録</button>
-      <button id="load-times">記録された時間を表示</button>
-  
-      
-  
+
       <script>
         function fullscreen(){
           //全画面表示
@@ -69,6 +70,21 @@
           document.getElementById('modal-overlay').style.display = 'block';
           document.getElementById('modal').style.display = 'block';
           document.getElementById('overlay').style.display = 'block';
+          /*
+          document.getElementById('fullscreenover').style.display = 'block';
+          document.getElementById('fullscreen').style.display = 'block';
+          */
+
+          /*const elem = document.documentElement; // 全画面表示にする要素（ここではドキュメント全体）
+          if (elem.requestFullscreen) {
+            elem.requestFullscreen();
+          } else if (elem.mozRequestFullScreen) { // Firefox
+            elem.mozRequestFullScreen();
+          } else if (elem.webkitRequestFullscreen) { // Chrome, Safari and Opera
+            elem.webkitRequestFullscreen();
+          } else if (elem.msRequestFullscreen) { // IE/Edge
+            elem.msRequestFullscreen();
+          }*/
         }
         
         function updateTime() {
@@ -81,7 +97,8 @@
         }
         updateTime();
         setInterval(updateTime, 1000);
-  
+
+
         let settotalseconds = null;
         let difseconds;
         function differencetime(){
@@ -95,7 +112,7 @@
             settotalseconds = null;
           }
         }
-  
+
         function diftime() {
           //残り時間の計算、表示
           let now = new Date();
@@ -132,64 +149,29 @@
           }
         }
         setInterval(diftime, 1000);
-  
+
         async function recordTime(type) {
             const currentTime = new Date().toISOString();
-            try {
               const response = await fetch('/record-time', {
-                  method: 'POST',
-                  headers: {
-                      'Content-Type': 'application/json',
-                  },
-                  body: JSON.stringify({ type, time: currentTime })
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ type, time: currentTime })
               });
-  
+
               if (response.ok) {
-                  const data = await response.json();
-                  document.getElementById('response').innerText = data.message;
+                const data = await response.json();
+                document.getElementById('response').innerText = data.message;
               } else {
-                  document.getElementById('response').innerText = 'エラーが発生しました。';
+                document.getElementById('response').innerText = 'エラーが発生しました。';
               }
-            } catch (error) {
-              console.error('Error recording time:', error);
-            }
         }
-  
+
         document.getElementById('recordtime').addEventListener('click', () => {
             recordTime('wake');
         });
-  
-        document.getElementById('load-times').addEventListener('click', async () => {
-          try {
-            const response = await fetch('/get-times');
-            if (response.ok) {
-              const data = await response.json();
-              const wakeTimesList = document.getElementById('wake-times');
-              const sleepTimesList = document.getElementById('sleep-times');
-  
-              wakeTimesList.innerHTML = '';
-              sleepTimesList.innerHTML = '';
-  
-              data.wakeTimes.forEach(time => {
-                const li = document.createElement('li');
-                li.textContent = time;
-                wakeTimesList.appendChild(li);
-              });
-  
-              data.sleepTimes.forEach(time => {
-                const li = document.createElement('li');
-                li.textContent = time;
-                sleepTimesList.appendChild(li);
-              });
-  
-            } else {
-              console.error('Failed to load times');
-            }
-          } catch (error) {
-            console.error('Error fetching times:', error);
-          }
-        });
-  
+
       </script>
     </header>
 
@@ -198,13 +180,6 @@
       <p>左カラム</p>
     </aside>-->
     <main>
-      <div id="response"></div>
-      <h2>Wake Times</h2>
-      <ul id="wake-times"></ul>
-      
-      <h2>Sleep Times</h2>
-      <ul id="sleep-times"></ul>
-  
       <div id="response"></div>
       <button id="kiroku-button">記録</button>
       <p>アチーブメント</p>
