@@ -23,8 +23,13 @@ serve(async(req) => {
       const key = [year, month, day, type];
       await kv.set(key, clockTime);
 
-   
-      return new Response(JSON.stringify({ message: `${clockTime},${type}時間が記録されました。` }), {
+      const iterator = kv.list();
+      const times = [];
+      for await({key,clockTime} of iterator){
+        times.push({key,clockTime});
+      }
+
+      return new Response(JSON.stringify(times,{ message: `${clockTime},${type}時間が記録されました。` }), {
         status: 200,
         headers: { "Content-Type": "application/json" },
       });
@@ -41,7 +46,7 @@ serve(async(req) => {
   //時間取得
   if (req.method === "GET" && url.pathname === "/get-times") {
     try{
-      const iterator = kv.list();
+      const iterator = kv.list({ prefix: ["2024"] });
       const times = [];
       console.log(iterator);
       for await (const { key, value } of iterator) {
