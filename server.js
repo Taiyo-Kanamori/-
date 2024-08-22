@@ -44,8 +44,8 @@ serve(async(req) => {
       const times = [];
       console.log(iterator);
       for await (const { key, value } of iterator) {
-        let aa = key.join('-');//結合
-        let bb = aa+"-"+value;
+        let date = key.join('-');//結合
+        let bb = date+"・時刻"+value;
         times.push(bb);
       
       }
