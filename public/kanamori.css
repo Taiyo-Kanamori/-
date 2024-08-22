@@ -6,7 +6,7 @@
   body {
     display: grid;
     grid-template:
-      'header header header' 200px
+      'header header header' 150px
       'left-colmun main right-colmun' auto
       'footer footer footer' 40px / 0px auto 200px;
   }
