@@ -1,78 +1,36 @@
-/* 全体のスタイル */
 * {
   box-sizing: border-box;
   margin: 0;
-  padding: 0;
 }
 
 body {
   display: grid;
   grid-template:
-    'header header header' 80px
-    'main main aside' 1fr
-    'footer footer footer' 40px / 1fr 3fr 1fr;
-  font-family: Arial, sans-serif;
-  background-color: #f0f4f8; /* 落ち着いた背景色 */
+    'header header header' 150px
+    'left-colmun main right-colmun' auto
+    'footer footer footer' 40px / 0px auto 200px;
 }
 
 header {
   grid-area: header;
-  background-color: #007bff; /* メインカラー */
-  color: #ffffff;
+  background-color: lightblue;
   text-align: center;
-  padding: 20px;
 }
-
-aside {
-  grid-area: aside;
-  background-color: #e9ecef; /* サイドバーの背景色 */
-  padding: 20px;
-  border-left: 1px solid #dee2e6; /* サイドバーの境界線 */
+aside#left {
+  grid-area: left-column;
+  background-color: lightsalmon;
 }
-
 main {
+  height: calc(100vh - 80px);
   grid-area: main;
-  background-color: #ffffff; /* メインコンテンツの背景色 */
-  padding: 20px;
-  border-left: 1px solid #dee2e6; /* コンテンツの境界線 */
+  background-color: lightgreen;
 }
-
-.modal, .modal-overlay, .overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  z-index: 1000;
+aside#right {
+  grid-area: right-colmun;
+  background-color: lightsalmon;
+  text-align: center;
 }
-
-.modal {
-  background-color: #ffffff;
-  padding: 20px;
-  display: none;
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
-}
-
-.modal-overlay {
-  background-color: rgba(0, 0, 0, 0.5);
-  display: none;
-}
-
-.overlay {
-  background-color: rgba(0, 0, 0, 0.8);
-  display: none;
-}
-
-button {
-  background-color: #007bff;
-  color: #ffffff;
-  border: none;
-  padding: 10px 20px;
-  cursor: pointer;
-  border-radius: 5px;
-  font-size: 16px;
-}
-
-button:hover {
-  background-color: #0056b3; /* ホバー時の色 */
+footer {
+  grid-area: footer;
+  background-color: lightblue;
 }

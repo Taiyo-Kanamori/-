@@ -5,12 +5,57 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>徹夜対策アプリ</title>
     <link rel="stylesheet" href="kanamori.css" />
+    <style>
+      /* モーダルのスタイル */
+      .modal {
+          position: fixed;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          background-color: white;
+          padding: 20px;
+          z-index: 10000;
+          box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+          display: none;
+      }
+      /* 背景の暗いオーバーレイ */
+      .modal-overlay {
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100vw;
+          height: 100vh;
+          background-color: rgba(0, 0, 0, 0.5);
+          z-index: 9999;
+          display: none;
+      }
+      .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 9999;
+            color: white;
+            display: none;
+            cursor: none; /* カーソルを非表示にする */
+        }
+    </style>
   </head>
 
   <body>
+    <div id="modal-overlay" class="modal-overlay"></div>
+    <div id="modal" class="modal"></div>
+    <div id="overlay" class="overlay"></div>
+    
+    <!--
+    <div id = "fullscreen" class = "fullscreen" style = "display:none;"></div>
+    <div id = "fullscreenover" class ="fullscreenover" style = "display:none;"></div>
+    -->
     <header>
-      <h1>徹夜対策アプリ</h1>
-      <h2 id="dif-time"></h2>
+      <h1>のこり時間</h1>
+      <h1 id="dif-time"></h1>
       現在時刻　<span id="current-time"></span><br />
       設定時間<input type="time" id="set-time" />
       <button onclick="differencetime()">決定</button>
@@ -19,165 +64,195 @@
       <button id="recordsleep">就寝時間を記録</button>
     </header>
 
+   
+    <!--
+    <aside id="left">
+      <p>左カラム</p>
+    </aside>-->
     <main>
       <button id="delete-all">記録削除</button>
       <button id="get-times">時間取得</button>
-      <button id="calculate-sleep">睡眠時間計算</button>
       <div id="response"></div>
-    </main>
 
-    <aside>
+      <!--<button id="kiroku-button">記録</button>
+      <p>アチーブメント</p>-->
+    </main>
+    <aside id="right">
       <p>ランキング</p>
     </aside>
-
-    <footer>
+    <!--<footer>
       <p>フッター</p>
-    </footer>
+    </footer>--> 
+    <script>
+      function fullscreen(){
+        //全画面表示
+        console.log("fullscreen");
+        document.getElementById('modal-overlay').style.display = 'block';
+        document.getElementById('modal').style.display = 'block';
+        document.getElementById('overlay').style.display = 'block';
+        /*
+        document.getElementById('fullscreenover').style.display = 'block';
+        document.getElementById('fullscreen').style.display = 'block';
+        */
 
-    <div id="modal-overlay" class="modal-overlay"></div>
-    <div id="modal" class="modal"></div>
-    <div id="overlay" class="overlay"></div>
-
-  <script>
-    function fullscreen() {
-      document.getElementById('modal-overlay').style.display = 'block';
-      document.getElementById('modal').style.display = 'block';
-      document.getElementById('overlay').style.display = 'block';
-    }
-
-    function updateTime() {
-      const now = new Date();
-      const hours = String(now.getHours()).padStart(2, '0');
-      const minutes = String(now.getMinutes()).padStart(2, '0');
-      const seconds = String(now.getSeconds()).padStart(2, '0');
-      document.getElementById('current-time').textContent = `${hours}:${minutes}:${seconds}`;
-    }
-    updateTime();
-    setInterval(updateTime, 1000);
-
-    let settotalseconds = null;
-    let difseconds;
-
-    function differencetime() {
-      let settime = document.getElementById('set-time').value;
-      if (settime) {
-        let [sethours, setminutes] = settime.split(':').map(Number);
-        settotalseconds = sethours * 3600 + setminutes * 60;
-      } else {
-        settotalseconds = null;
+        /*
+        const elem = document.documentElement; // 全画面表示にする要素（ここではドキュメント全体）
+        if (elem.requestFullscreen) {
+          elem.requestFullscreen();
+        } else if (elem.mozRequestFullScreen) { // Firefox
+          elem.mozRequestFullScreen();
+        } else if (elem.webkitRequestFullscreen) { // Chrome, Safari and Opera
+          elem.webkitRequestFullscreen();
+        } else if (elem.msRequestFullscreen) { // IE/Edge
+          elem.msRequestFullscreen();
+        }*/
       }
-    }
+        
+      function updateTime() {
+        //現在時刻表示
+        const now = new Date();
+        const hours = String(now.getHours()).padStart(2, '0');
+        const minutes = String(now.getMinutes()).padStart(2, '0');
+        const seconds = String(now.getSeconds()).padStart(2, '0');
+        document.getElementById('current-time').textContent = `${hours}:${minutes}:${seconds}`;
+      }
+      updateTime();
+      setInterval(updateTime, 1000);
 
-    function diftime() {
-      let now = new Date();
-      let hours = now.getHours();
-      let minutes = now.getMinutes();
-      let seconds = now.getSeconds();
-      let difhours, difminutes;
-      if (settotalseconds === null) {
-        difhours = "--";
-        difminutes = "--";
-        difseconds = "--";
-      } else {
-        let totalseconds = hours * 3600 + minutes * 60 + seconds;
-        difseconds = settotalseconds - totalseconds;
-        if (difseconds < 0) {
-          difseconds += 24 * 3600;
+
+      let settotalseconds = null;
+      let difseconds;
+      function differencetime(){
+        //決定ボタンを押されたとき設定時間の変更
+        let settime = document.getElementById('set-time').value;
+        if (settime){
+          let [sethours, setminutes] = settime.split(':').map(Number);
+          settotalseconds = sethours*3600+setminutes*60;
         }
-        difhours = Math.floor(difseconds / 3600);
-        difseconds %= 3600;
-        difminutes = Math.floor(difseconds / 60);
-        difseconds %= 60;
-        difhours = String(difhours).padStart(2, '0');
-        difminutes = String(difminutes).padStart(2, '0');
-        difseconds = String(difseconds).padStart(2, '0');
+        else{
+          settotalseconds = null;
+        }
       }
-      document.getElementById('dif-time').textContent = `${difhours}:${difminutes}:${difseconds}`;
 
-      if (difhours === "00" && difminutes === "00" && difseconds === "00") {
-        alert("時間が経過しました");
-        fullscreen();
-      }
-    }
-    setInterval(diftime, 1000);
+      function diftime() {
+        //残り時間の計算、表示
+          let now = new Date();
+          let hours = now.getHours();
+          let minutes = now.getMinutes();
+          let seconds = now.getSeconds();
+          let difhours,difminutes;
+          if (settotalseconds === null){
+            difhours = "--";
+            difminutes = "--";
+            difseconds = "--";
+          }
+          else{
+            let totalseconds = hours*3600+minutes*60+seconds;
+            difseconds = settotalseconds - totalseconds;
+            if (difseconds < 0){
+              difseconds += 24*3600;
+            }
+            difhours = Math.floor(difseconds / 3600);
+            difseconds %= 3600;
+            difminutes = Math.floor(difseconds / 60);
+            difseconds %= 60;
+            difhours = String(difhours).padStart(2, '0');
+            difminutes = String(difminutes).padStart(2, '0');
+            difseconds = String(difseconds).padStart(2, '0');
+          }
+          document.getElementById('dif-time').textContent = `${difhours}:${difminutes}:${difseconds}`;
+          
+          if (difhours === "00" & difminutes ==="00" & difseconds ==="00"){
+            console.log("test");
+            alert("時間が経過しました");
+            
+            fullscreen();
+          }
+        }
+        setInterval(diftime, 1000);
 
-    async function recordTime(type) {
-      const currentTime = new Date().toISOString();
-      try {
-        const response = await fetch('/record-time', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ type, time: currentTime })
+        //時間記録
+        async function recordTime(type) {
+          const currentTime = new Date().toISOString();
+          try {
+            const response = await fetch('/record-time', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ type, time: currentTime })
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                document.getElementById('response').innerText = data.message;
+            } else {
+                document.getElementById('response').innerText = 'エラーが発生しました。';
+            }
+          } catch (error) {
+            console.error('Error recording time:', error);
+          }
+        }
+
+        document.getElementById('recordwake').addEventListener('click', () => {
+            recordTime('wake');
+        });
+        document.getElementById('recordsleep').addEventListener('click', () => {
+            recordTime('sleep');
         });
 
-        if (response.ok) {
+        //時間取得
+        async function getAllTimes() {
+          try {
+            const response = await fetch('/get-times',{
+              method: 'GET',
+            });
+             
+            if (response.ok) {
+              const times = await response.json();
+
+              document.getElementById('response').innerText = JSON.stringify(times, null, 2);
+            } else {
+              document.getElementById('response').innerText = 'エラーが発生しました。';
+            }
+          } catch (error) {
+            console.error('Error getting times:', error);
+          }
+        }
+        document.getElementById('get-times').addEventListener('click', () => {
+          getAllTimes();
+        });
+        
+        //記録削除
+        async function deleteAllTimes() {
+          const response = await fetch('/delete-all', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          });
+          if (response.ok) {
+            const data = await response.json();
+            document.getElementById('response').innerText = data.message;
+          } else {
+            document.getElementById('response').innerText = 'エラーが発生しました。';
+          }
+        }
+        document.getElementById('delete-all').addEventListener('click',() => {
+          deleteAllTimes();
+        });
+
+        //睡眠時間計算
+        async function calculateSleepTime() {
+          const response = await fetch('/calculate-sleep', {
+            method: 'GET',
+          });
           const data = await response.json();
-          document.getElementById('response').innerText = data.message;
-        } else {
-          document.getElementById('response').innerText = 'エラーが発生しました。';
+          document.getElementById('response').innerText = `睡眠時間: ${data.sleepDuration}`;
         }
-      } catch (error) {
-        console.error('Error recording time:', error);
-      }
-    }
-
-    document.getElementById('recordwake').addEventListener('click', () => {
-      recordTime('wake');
-    });
-    document.getElementById('recordsleep').addEventListener('click', () => {
-      recordTime('sleep');
-    });
-
-    async function getAllTimes() {
-      try {
-        const response = await fetch('/get-times', {
-          method: 'GET',
+        document.getElementById('calculate-sleep').addEventListener('click', () => {
+          calculateSleepTime();
         });
-
-        if (response.ok) {
-          const times = await response.json();
-          document.getElementById('response').innerText = JSON.stringify(times, null, 2);
-        } else {
-          document.getElementById('response').innerText = 'エラーが発生しました。';
-        }
-      } catch (error) {
-        console.error('Error getting times:', error);
-      }
-    }
-    document.getElementById('get-times').addEventListener('click', () => {
-      getAllTimes();
-    });
-
-    async function deleteAllTimes() {
-      const response = await fetch('/delete-all', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-      if (response.ok) {
-        const data = await response.json();
-        document.getElementById('response').innerText = data.message;
-      } else {
-        document.getElementById('response').innerText = 'エラーが発生しました。';
-      }
-    }
-    document.getElementById('delete-all').addEventListener('click', () => {
-      deleteAllTimes();
-    });
-
-    async function calculateSleepTime() {
-      const response = await fetch('/calculate-sleep', {
-        method: 'GET',
-      });
-      const data = await response.json();
-      document.getElementById('response').innerText = `睡眠時間: ${data.sleepDuration}`;
-    }
-    document.getElementById('calculate-sleep').addEventListener('click', () => {
-      calculateSleepTime();
-    });
-  </script>
-</body>
+      </script>
+  </body>
 </html>
