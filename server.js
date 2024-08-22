@@ -15,15 +15,10 @@ serve(async(req) => {
   if (req.method === "POST" && url.pathname === "/record-time") {
     try {
       const { type, time } = await req.json();
-
-      if (type === "wake") {
-        await kv.set(["times", "wakeTime"], time);
-      } else if (type === "sleep") {
-        await kv.set(["times", "sleepTime"], time);
-      } else {
-        throw new Error("Invalid type");
-      }
-
+      const timestamp = new Date().toISOString();
+      const key = `${type}Time_${timestamp}`;
+      await kv.set(key, time);
+      
       return new Response(JSON.stringify({ message: `${type}時間が記録されました。` }), {
         status: 200,
         headers: { "Content-Type": "application/json" },
