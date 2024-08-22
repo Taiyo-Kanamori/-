@@ -149,27 +149,27 @@
         }
         setInterval(diftime, 1000);
 
-        document.getElementById('recordtime').addEventListener('click', async () => {
-            // 現在の時刻をISOフォーマットで取得
+        async function recordTime(type) {
             const currentTime = new Date().toISOString();
-
-            // サーバーにPOSTリクエストを送信して時間を記録
             const response = await fetch('/record-time', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ type,time: currentTime })
+                body: JSON.stringify({ type, time: currentTime })
             });
 
-            // レスポンスを取得して表示
             if (response.ok) {
                 const data = await response.json();
                 document.getElementById('response').innerText = data.message;
             } else {
                 document.getElementById('response').innerText = 'エラーが発生しました。';
             }
-        });
+        }
+
+        document.getElementById('recordWakeButton').addEventListener('click', () => {
+            recordTime('wake');
+       
 
       </script>
     </header>
