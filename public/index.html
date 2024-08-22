@@ -187,6 +187,12 @@
               'Content-Type': 'application/json',
             },
           });
+          if (response.ok) {
+            const data = await response.json();
+            document.getElementById('response').innerText = data.message;
+          } else {
+            document.getElementById('response').innerText = 'エラーが発生しました。';
+          }
         }
         document.getElementById('delete-all').addEventListener('click',deleteAllTimes);
   
