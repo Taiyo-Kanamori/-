@@ -35,6 +35,7 @@ serve(async(req) => {
   }
   //時間取得
   if (req.method === "GET" && url.pathname === "/get-times") {
+    try{
       const iterator = kv.list(); // プレフィックスを設定しない場合、全てのキーを取得
       const times = [];
       for await (const { key, value } of iterator) {
@@ -45,6 +46,13 @@ serve(async(req) => {
         status: 200,
         headers: { "Content-Type": "application/json" },
       });
+    }catch (error) {
+      console.error("Error fetching times:", error.message);
+      return new Response(JSON.stringify({ message: "サーバーエラーが発生しました。" }), {
+        status: 500,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
   }
 
   //記録削除
