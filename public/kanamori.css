@@ -1,37 +1,69 @@
 * {
-    box-sizing: border-box;
-    margin: 0;
-  }
-  
-  body {
-    display: grid;
-    grid-template:
-      'header header header' 150px
-      'left-colmun main right-colmun' auto
-      'footer footer footer' 40px / 0px auto 200px;
-  }
-  
-  header {
-    grid-area: header;
-    background-color: lightblue;
-    text-align: center;
-  }
-  aside#left {
-    grid-area: left-column;
-    background-color: lightsalmon;
-  }
-  main {
-    height: calc(100vh - 80px);
-    grid-area: main;
-    background-color: lightgreen;
-  }
-  aside#right {
-    grid-area: right-colmun;
-    background-color: lightsalmon;
-    text-align: center;
-  }
-  footer {
-    grid-area: footer;
-    background-color: lightblue;
-  }
-  
+  box-sizing: border-box;
+  margin: 0;
+}
+
+body {
+  display: grid;
+  grid-template:
+    'header header header' 150px
+    'left main right' auto
+    'footer footer footer' 40px / 1fr 2fr 1fr;
+  font-family: Arial, sans-serif;
+  background-color: #f0f0f0;
+}
+
+header {
+  grid-area: header;
+  background-color: lightblue;
+  padding: 15px;
+  text-align: center;
+}
+
+aside#left {
+  grid-area: left;
+  background-color: lightsalmon;
+  padding: 15px;
+}
+
+main {
+  grid-area: main;
+  background-color: lightgreen;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+aside#right {
+  grid-area: right;
+  background-color: lightsalmon;
+  text-align: center;
+  padding: 15px;
+}
+
+footer {
+  grid-area: footer;
+  background-color: lightblue;
+  text-align: center;
+  padding: 10px;
+}
+
+button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px;
+  margin: 5px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+.time-display {
+  font-size: 24px;
+  margin: 20px 0;
+}
