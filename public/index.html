@@ -179,6 +179,7 @@
             recordTime('sleep');
         });
 
+        //記録削除
         async function deleteAllTimes() {
           const response = await fetch('/delete-all', {
             method: 'POST',
