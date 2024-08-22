@@ -31,7 +31,8 @@ serve(async(req) => {
     }
   }
 
-  if (req.method === "POST" && url.pathname === "/delete-all-times") {
+  //記録削除
+  if (req.method === "POST" && url.pathname === "/delete-all") {
     try {
       // キーの取得と削除処理
       const iterator = kv.list({ prefix: '' }); // プレフィックスが空で全てのキーを取得
