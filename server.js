@@ -18,8 +18,8 @@ serve(async(req) => {
       const timestamp = new Date().toISOString();
       const key = `${type}Time_${timestamp}`;
       await kv.set(key, time);
-      
-      return new Response(JSON.stringify({ message: `${type}時間が記録されました。` }), {
+
+      return new Response(JSON.stringify({ message: `${time},${type}時間が記録されました。` }), {
         status: 200,
         headers: { "Content-Type": "application/json" },
       });
