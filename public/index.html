@@ -210,15 +210,6 @@
              
             if (response.ok) {
               const times = await response.json();
-              // テーブル形式でデータを表示
-              let html = "<table><tr><th>Key</th><th>Value</th></tr>";
-              times.forEach(item => {
-              html += `<tr><td>${item.key.join(", ")}</td><td>${item.value}</td></tr>`;
-              });
-              html += "</table>";
-
-              document.getElementById('response').innerHTML = html;
-
 
               document.getElementById('response').innerText = JSON.stringify(times, null, 2);
             } else {
