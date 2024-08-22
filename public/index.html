@@ -241,6 +241,18 @@
         document.getElementById('delete-all').addEventListener('click',() => {
           deleteAllTimes();
         });
+
+        //睡眠時間計算
+        async function calculateSleepTime() {
+          const response = await fetch('/calculate-sleep', {
+            method: 'GET',
+          });
+          const data = await response.json();
+          document.getElementById('response').innerText = `睡眠時間: ${data.sleepDuration}`;
+        }
+        document.getElementById('calculate-sleep').addEventListener('click', () => {
+          calculateSleepTime();
+        });
       </script>
   </body>
 </html>
