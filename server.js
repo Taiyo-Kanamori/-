@@ -47,6 +47,16 @@ serve(async(req) => {
         times.push({ key, value });
       }
 
+      // テーブル形式でデータを表示
+      let html = "<table><tr><th>Key</th><th>Value</th></tr>";
+      times.forEach(item => {
+      html += `<tr><td>${item.key.join(", ")}</td><td>${item.value}</td></tr>`;
+      });
+      html += "</table>";
+
+      document.getElementById('response').innerHTML = html;
+
+
       return new Response(JSON.stringify(times), {
         status: 200,
         headers: { "Content-Type": "application/json" },
@@ -64,7 +74,7 @@ serve(async(req) => {
   if (req.method === "POST" && url.pathname === "/delete-all") {
     try {
       // キーの取得と削除処理
-      const iterator = kv.list({ prefix: ["2024"] }); // プレフィックスが空で全てのキーを取得
+      const iterator = kv.list({ prefix: [] });
       for await (const { key } of iterator) {
         await kv.delete(key);
       }
