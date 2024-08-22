@@ -32,14 +32,14 @@ main {
 
 aside#left {
   grid-area: left;
-  background-color: #f5a623;
+  background-color: #2397f5;
   color: white;
   padding: 20px;
 }
 
 aside#right {
   grid-area: right;
-  background-color: #f5a623;
+  background-color: #2397f5;
   color: white;
   padding: 20px;
   text-align: center;
