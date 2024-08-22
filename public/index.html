@@ -194,7 +194,9 @@
             document.getElementById('response').innerText = 'エラーが発生しました。';
           }
         }
-        document.getElementById('delete-all').addEventListener('click',deleteAllTimes);
+        document.getElementById('delete-all').addEventListener('click',() => {
+          deleteAllTimes();
+        });
   
       </script>
     </header>
