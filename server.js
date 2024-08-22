@@ -36,8 +36,9 @@ serve(async(req) => {
   //時間取得
   if (req.method === "GET" && url.pathname === "/get-times") {
     try{
-      const iterator = kv.list(); // プレフィックスを設定しない場合、全てのキーを取得
+      const iterator = kv.list();
       const times = [];
+      console.log(iterator);
       for await (const { key, value } of iterator) {
         times.push({ key, value });
       }
