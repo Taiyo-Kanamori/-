@@ -87,6 +87,70 @@ serve(async(req) => {
     }
   }
 
+  //睡眠時間
+  // 時間の計算処理
+if (req.method === "GET" && url.pathname === "/calculate-sleep") {
+  try {
+    const iterator = kv.list({ prefix: [] });
+    const times = [];
+
+    for await (const { key, value } of iterator) {
+      times.push({ key, value });
+    }
+
+    // 時間を整形するためにソート（昇順）
+    times.sort((a, b) => a.key.join('-').localeCompare(b.key.join('-')));
+
+    let sleepTime = null;
+    let wakeTime = null;
+
+    for (const { key, value } of times) {
+      const [year, month, day, type] = key;
+      const timeStr = value;
+      const dateStr = `${year}-${month}-${day}T${timeStr}`;
+      const dateTime = new Date(dateStr);
+
+      if (type === "sleep") {
+        sleepTime = dateTime;
+      } else if (type === "wake") {
+        wakeTime = dateTime;
+      }
+    }
+
+    if (sleepTime && wakeTime) {
+      const diff = wakeTime.getTime() - sleepTime.getTime();
+      const hours = Math.floor(diff / (1000 * 60 * 60));
+      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+      return new Response(
+        JSON.stringify({ sleepDuration: `${hours}時間 ${minutes}分 ${seconds}秒` }),
+        {
+          status: 200,
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+    } else {
+      return new Response(
+        JSON.stringify({ message: "睡眠時間のデータが不足しています。" }),
+        {
+          status: 400,
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+    }
+  } catch (error) {
+    console.error("Error calculating sleep time:", error.message);
+    return new Response(
+      JSON.stringify({ message: "サーバーエラーが発生しました。" }),
+      {
+        status: 500,
+        headers: { "Content-Type": "application/json" },
+      }
+    );
+  }
+}
+
 
   return serveDir(req, {
     fsRoot: 'public',
