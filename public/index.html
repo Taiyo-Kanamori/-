@@ -202,6 +202,7 @@
 
         //時間取得
         async function getAllTimes() {
+          const times = await response.json();
           try {
             const response = await fetch('/get-times',{
               method: 'GET',
@@ -212,7 +213,7 @@
             });
              
             if (response.ok) {
-              const times = await response.json();
+              
               console.log(times);
               document.getElementById('response').innerText = JSON.stringify(times, null, 2);
             } else {
