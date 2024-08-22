@@ -16,7 +16,7 @@ serve(async(req) => {
     try {
       const { type, time } = await req.json();
       const timestamp = new Date().toISOString();
-      const key = [`${timestamp}Times`];
+      const key = [`${timestamp}-${type}Times`];
       await kv.set(key, time);
 
       return new Response(JSON.stringify({ message: `${time},${type}時間が記録されました。` }), {
