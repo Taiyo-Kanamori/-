@@ -16,7 +16,7 @@ serve(async(req) => {
     try {
       const { type, time } = await req.json();
       const timestamp = new Date().toISOString();
-      const key = `${type}Time_${timestamp}`;
+      const key = [`${type}Times`];
 
       await kv.set(key, time);
 
