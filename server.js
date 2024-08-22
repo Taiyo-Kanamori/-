@@ -13,25 +13,35 @@ serve(async(req) => {
   const url = new URL(req.url);
 
   if (req.method === "POST" && url.pathname === "/record-time") {
-    try {
-      const { type, time } = await req.json();
+    const { type, time } = await req.json();
       const timestamp = new Date().toISOString();
       const key = `${type}Time_${timestamp}`;
 
       await kv.set(key, time);
 
-      return new Response(JSON.stringify({ message: `${time},${type}時間が記録されました。` }), {
+      return new Response(JSON.stringify({ message: `${type}時間が記録されました。` }), {
         status: 200,
         headers: { "Content-Type": "application/json" },
       });
-    } catch (error) {
-      console.error("Error processing request:", error.message);
-      return new Response(JSON.stringify({ message: "サーバーエラーが発生しました。" }), {
-        status: 500,
+    } else if (req.method === "GET" && url.pathname === "/get-times") {
+      const wakeTimes = [];
+      const sleepTimes = [];
+
+      // "wakeTime_" プレフィックスで保存された全てのエントリーを取得
+      for await (const entry of kv.list({ prefix: 'wakeTime_' })) {
+        wakeTimes.push(entry.value);
+      }
+
+      // "sleepTime_" プレフィックスで保存された全てのエントリーを取得
+      for await (const entry of kv.list({ prefix: 'sleepTime_' })) {
+        sleepTimes.push(entry.value);
+      }
+
+      return new Response(JSON.stringify({ wakeTimes, sleepTimes }), {
+        status: 200,
         headers: { "Content-Type": "application/json" },
       });
     }
-  }
 
 
   return serveDir(req, {
