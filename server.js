@@ -15,8 +15,12 @@ serve(async(req) => {
   if (req.method === "POST" && url.pathname === "/record-time") {
     try {
       const { type, time } = await req.json();
-      const timestamp = new Date().toISOString();
-      const key = [`${timestamp}`,`${type}Times`];
+      const timestamp = new Date(time);
+      const year = String(timestamp.getFullYear());
+      const month = String(timestamp.getMonth() + 1); // 月は0から始まるので +1
+      const day = String(timestamp.getDate());
+      const clockTime = timestamp.toTimeString().split(' ')[0]; // HH:MM:SS形式
+      const key = [year, month, day, clockTime, `${type}time`];
       await kv.set(key, time);
 
       return new Response(JSON.stringify({ message: `${time},${type}時間が記録されました。` }), {
