@@ -23,13 +23,7 @@ serve(async(req) => {
       const key = [year, month, day, type];
       await kv.set(key, clockTime);
 
-      const iterator = kv.list();
-      const times = [];
-      for await({key,clockTime} of iterator){
-        times.push({key,clockTime});
-      }
-
-      return new Response(JSON.stringify(times,{ message: `${clockTime},${type}時間が記録されました。` }), {
+      return new Response(JSON.stringify({ message: `${clockTime},${type}時間が記録されました。` }), {
         status: 200,
         headers: { "Content-Type": "application/json" },
       });
