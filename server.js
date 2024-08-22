@@ -20,7 +20,7 @@ serve(async(req) => {
       const month = String(timestamp.getMonth() + 1); // 月は0から始まるので +1
       const day = String(timestamp.getDate());
       const clockTime = timestamp.toTimeString().split(' ')[0]; // HH:MM:SS形式
-      const key = [year, month, day, type];
+      const key = [year-month-day-type];
       await kv.set(key, clockTime);
 
       return new Response(JSON.stringify({ message: `${clockTime},${type}時間が記録されました。` }), {
@@ -46,6 +46,7 @@ serve(async(req) => {
       for await (const { key, value } of iterator) {
         times.push({ key, value });
       }
+
 
       return new Response(JSON.stringify(times), {
         status: 200,
