@@ -180,6 +180,9 @@
         });
 
         //時間取得
+        document.getElementById('get-times').addEventListener('click', () => {
+          getAllTimes();
+        });
         async function getAllTimes() {
           try {
             const response = await fetch('/get-times');
@@ -194,9 +197,7 @@
           }
         }
 
-        document.getElementById('get-times').addEventListener('click', () => {
-          getAllTimes();
-        });
+        
         //記録削除
         /*
         async function deleteAllTimes() {
