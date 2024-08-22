@@ -15,23 +15,8 @@ serve(async(req) => {
 
     try {
       const { type, time } = await req.json();
-      // 現在の年、月、日を取得
-      const now = new Date();
-      const year = now.getFullYear();
-      const month = String(now.getMonth() + 1).padStart(2, '0'); // 月は0ベースなので+1
-      const day = String(now.getDate()).padStart(2, '0');
-      
-      // 年-月-日 の形式にフォーマット
-      const timestamp = `${year}-${month}-${day}`;
-      const key = [`${timestamp}-${type}Times`]; 
-
-      // 現在の記録を取得
-      const currentData = await kv.get(key);
-      const times = currentData?.value || [];
-
-      // 新しい記録を追加
-      times.push(time);
-
+      const timestamp = new Date().toISOString();
+      const key = [`${timestamp}Times`];
       await kv.set(key, time);
 
       return new Response(JSON.stringify({ message: `${time},${type}時間が記録されました。` }), {
