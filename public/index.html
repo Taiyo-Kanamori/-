@@ -6,36 +6,38 @@
     <title>徹夜対策アプリ</title>
     <link rel="stylesheet" href="kanamori.css" />
   </head>
+
   <body>
     <header>
-      <h1>のこり時間</h1>
-      <h1 id="dif-time">--:--:--</h1>
-      現在時刻: <span id="current-time">--:--:--</span><br />
-      設定時間: <input type="time" id="set-time" />
+      <h1>徹夜対策アプリ</h1>
+      <h2 id="dif-time"></h2>
+      現在時刻　<span id="current-time"></span><br />
+      設定時間<input type="time" id="set-time" />
       <button onclick="differencetime()">決定</button>
       <button onclick="fullscreen()">全画面</button>
       <button id="recordwake">起床時間を記録</button>
       <button id="recordsleep">就寝時間を記録</button>
-      <button id="calculate-sleep">睡眠時間を計算</button>
     </header>
-    
-    <div id="modal-overlay" class="modal-overlay"></div>
-    <div id="modal" class="modal"></div>
-    <div id="overlay" class="overlay"></div>
-    
+
     <main>
       <button id="delete-all">記録削除</button>
       <button id="get-times">時間取得</button>
+      <button id="calculate-sleep">睡眠時間計算</button>
       <div id="response"></div>
     </main>
 
-    <aside id="left">
-      <p>左カラム</p>
-    </aside>
-    
-    <aside id="right">
+    <aside>
       <p>ランキング</p>
     </aside>
+
+    <footer>
+      <p>フッター</p>
+    </footer>
+
+    <div id="modal-overlay" class="modal-overlay"></div>
+    <div id="modal" class="modal"></div>
+    <div id="overlay" class="overlay"></div>
+
   <script>
     function fullscreen() {
       document.getElementById('modal-overlay').style.display = 'block';
