@@ -13,20 +13,28 @@ serve(async(req) => {
   const url = new URL(req.url);
 
   if (req.method === "POST" && url.pathname === "/record-time") {
-    console.log(kv);
+    try {
+      const { type, time } = await req.json();
 
-    const{type,time} = await req.json();
-    
-    if (type === "wake") {
-      await kv.set("wakeTime", time);
-    } else if (type === "sleep") {
-      await kv.set("sleepTime", time);
+      if (type === "wake") {
+        await kv.set(["times", "wakeTime"], time);
+      } else if (type === "sleep") {
+        await kv.set(["times", "sleepTime"], time);
+      } else {
+        throw new Error("Invalid type");
+      }
+
+      return new Response(JSON.stringify({ message: `${type}時間が記録されました。` }), {
+        status: 200,
+        headers: { "Content-Type": "application/json" },
+      });
+    } catch (error) {
+      console.error("Error processing request:", error);
+      return new Response(JSON.stringify({ message: "サーバーエラーが発生しました。" }), {
+        status: 500,
+        headers: { "Content-Type": "application/json" },
+      });
     }
-
-    return new Response(JSON.stringify({ message: `${type}時間が記録されました。` }), {
-      status: 200,
-      headers: { "Content-Type": "application/json" },
-    });
   }
 
 
