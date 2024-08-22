@@ -210,8 +210,10 @@
                 },
                 body: JSON.stringify({times})
             });
+             
             if (response.ok) {
               const times = await response.json();
+              console.log(times);
               document.getElementById('response').innerText = JSON.stringify(times, null, 2);
             } else {
               document.getElementById('response').innerText = 'エラーが発生しました。';
