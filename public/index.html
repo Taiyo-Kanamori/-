@@ -61,8 +61,8 @@
       設定時間<input type="time" id="set-time" />
       <button onclick="differencetime()">決定</button>
       <button onclick="fullscreen()">全画面</button>
-      <button id="recordtime">時間を記録</button>
-
+      <button id="recordwake">起床時間を記録</button>
+      <button id="recordsleep">就寝時間を記録</button>
       <script>
         function fullscreen(){
           //全画面表示
@@ -151,27 +151,35 @@
         setInterval(diftime, 1000);
 
         async function recordTime(type) {
-            const currentTime = new Date().toISOString();
-              const response = await fetch('/record-time', {
+          const currentTime = new Date().toISOString();
+          try {
+            const response = await fetch('/record-time', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({ type, time: currentTime })
-              });
+            });
 
-              if (response.ok) {
+            if (response.ok) {
                 const data = await response.json();
                 document.getElementById('response').innerText = data.message;
-              } else {
+            } else {
                 document.getElementById('response').innerText = 'エラーが発生しました。';
-              }
+            }
+          } catch (error) {
+            console.error('Error recording time:', error);
+          }
         }
 
-        document.getElementById('recordtime').addEventListener('click', () => {
+        document.getElementById('recordwake').addEventListener('click', () => {
             recordTime('wake');
         });
+        document.getElementById('recordsleep').addEventListener('click', () => {
+            recordTime('sleep');
+        });
 
+  
       </script>
     </header>
 
@@ -180,9 +188,10 @@
       <p>左カラム</p>
     </aside>-->
     <main>
+      <button id="delete">記録削除</button>
       <div id="response"></div>
-      <button id="kiroku-button">記録</button>
-      <p>アチーブメント</p>
+      <!--<button id="kiroku-button">記録</button>
+      <p>アチーブメント</p>-->
     </main>
     <!--<aside id="right">
       <p>ランキング</p>
