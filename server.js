@@ -40,7 +40,7 @@ serve(async(req) => {
   //時間取得
   if (req.method === "GET" && url.pathname === "/get-times") {
     try{
-      const iterator = kv.list({ prefix: [""] });
+      const iterator = kv.list({ prefix: [] });
       const times = [];
       console.log(iterator);
       for await (const { key, value } of iterator) {
