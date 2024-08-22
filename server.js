@@ -16,11 +16,13 @@ serve(async(req) => {
     try {
       const { type, time } = await req.json();
       if (type === "wake") {
-        await kv.set("wakeTime", time);
+        await kv.set(["times", "wakeTime"], time);
       } else if (type === "sleep") {
-        await kv.set("sleepTime", time);
+        await kv.set(["times", "sleepTime"], time);
+      } else {
+        throw new Error("Invalid type");
       }
-      
+
       return new Response(JSON.stringify({ message: `${time},${type}時間が記録されました。` }), {
         status: 200,
         headers: { "Content-Type": "application/json" },
