@@ -22,8 +22,8 @@ serve(async(req) => {
       const day = String(now.getDate()).padStart(2, '0');
       
       // 年-月-日 の形式にフォーマット
-      //const timestamp = `${year}-${month}-${day}`;
-      const key = [`${year}-${month}-${day}-${type}Times`]; 
+      const timestamp = `${year}-${month}-${day}`;
+      const key = [`${timestamp}-${type}Times`]; 
 
       // 現在の記録を取得
       const currentData = await kv.get(key);
