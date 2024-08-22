@@ -23,6 +23,7 @@ serve(async(req) => {
         status: 200,
         headers: { "Content-Type": "application/json" },
       });
+      
     } catch (error) {
       console.error("Error processing request:", error.message);
       return new Response(JSON.stringify({ message: "サーバーエラーが発生しました。" }), {
@@ -30,6 +31,7 @@ serve(async(req) => {
         headers: { "Content-Type": "application/json" },
       });
     }
+    
   }
   //時間取得
   if (req.method === "GET" && url.pathname === "/get-times") {
