@@ -11,7 +11,6 @@ const kv = await Deno.openKv();
 serve(async(req) => {
   // publicフォルダ内にあるファイルを返す
   const url = new URL(req.url);
-  await kv.delete([]);
   if (req.method === "POST" && url.pathname === "/record-time") {
 
     try {
