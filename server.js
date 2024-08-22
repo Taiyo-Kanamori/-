@@ -23,7 +23,7 @@ serve(async(req) => {
       
       // 年-月-日 の形式にフォーマット
       //const timestamp = `${year}-${month}-${day}`;
-      const key = [`${year},${month},${day},${type}Times`]; 
+      const key = [`${year}``${month}``${day}``${type}Times`]; 
 
       // 現在の記録を取得
       const currentData = await kv.get(key);
