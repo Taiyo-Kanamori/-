@@ -232,6 +232,7 @@
       });
 
       // 睡眠時間グラフ表示
+      let sleepChart = null; 
       async function showSleepChart() {
         try {
           const response = await fetch('/calculate-sleep', {
@@ -249,36 +250,42 @@
             });
 
             const ctx = document.getElementById('sleepChart').getContext('2d');
-            new Chart(ctx, {
-              type: 'line',
-              data: {
-                labels: dates,
-                datasets: [{
-                  label: '睡眠時間（分）',
-                  data: durations,
-                  borderColor: 'rgba(75, 192, 192, 1)',
-                  backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                  borderWidth: 1,
-                }],
-              },
-              options: {
-                scales: {
-                  x: {
-                    title: {
-                      display: true,
-                      text: '日付',
+            if (sleepChart) { // 既存のグラフがあるかチェック
+              sleepChart.data.labels = dates; // データを更新
+              sleepChart.data.datasets[0].data = durations; // データを更新
+              sleepChart.update(); // グラフを再描画
+            } else { // グラフがまだ存在しない場合
+              sleepChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                  labels: dates,
+                  datasets: [{
+                    label: '睡眠時間（分）',
+                    data: durations,
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderWidth: 1,
+                  }],
+                },
+                options: {
+                  scales: {
+                    x: {
+                      title: {
+                        display: true,
+                        text: '日付',
+                      },
                     },
-                  },
-                  y: {
-                    title: {
-                      display: true,
-                      text: '睡眠時間（分）',
+                    y: {
+                      title: {
+                        display: true,
+                        text: '睡眠時間（分）',
+                      },
+                      beginAtZero: true,
                     },
-                    beginAtZero: true,
                   },
                 },
-              },
-            });
+              });
+            }
           } else {
             document.getElementById('response').innerText = 'エラーが発生しました。';
           }
@@ -289,7 +296,7 @@
       }
 
       document.getElementById('show-chart').addEventListener('click', () => {
-        showSleepChart();
+        showSleepChart(); // グラフ表示ボタンがクリックされたときにデータを更新
       });
 
 
