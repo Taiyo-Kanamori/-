@@ -25,7 +25,7 @@
     <main>
       <!--<button id="delete-all">記録削除</button>-->
       
-      <button id="show-chart">睡眠時間グラフ表示</button> <!-- グラフ表示ボタンの追加 -->
+      <button id="show-chart">睡眠時間グラフ表示</button>
       <div id="response"></div>
       <canvas id="sleepChart" width="800" height="400"></canvas> <!-- グラフ用のキャンバス -->
       <div id="response"></div>
@@ -39,6 +39,7 @@
 
     <aside id="right">
       <p>ランキング</p>
+      <div id="sleep-time-list"></div>
     </aside>
 
     <div id="modal-overlay" class="modal-overlay"></div>
@@ -218,6 +219,22 @@
             });
 
             document.getElementById('response-left').innerText = displayText;
+
+            // 各日の睡眠時間を多い順にソート
+            const sortedDurations = sleepDurations.sort((a, b) => {
+              const durationA = parseInt(a.sleepDuration.split(' ')[0], 10) * 60 + parseInt(a.sleepDuration.split(' ')[2], 10);
+              const durationB = parseInt(b.sleepDuration.split(' ')[0], 10) * 60 + parseInt(b.sleepDuration.split(' ')[2], 10);
+              return durationB - durationA; // 多い順にソート
+            });
+
+            // ソート結果を表示
+            let sortedDisplayText = '睡眠時間が多い順:\n';
+            sortedDurations.forEach(({ date, sleepDuration }) => {
+              sortedDisplayText += `${date}: ${sleepDuration}\n`;
+            });
+            document.getElementById('sleep-time-list').innerText = sortedDisplayText;
+
+
           } else {
             document.getElementById('response-left').innerText = 'エラーが発生しました。';
           }
