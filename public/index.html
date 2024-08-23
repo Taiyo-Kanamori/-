@@ -20,22 +20,19 @@
       <button id="recordsleep">就寝時間を記録</button>
     </header>
 
-    
-    
     <main>
       <!--<button id="delete-all">記録削除</button>-->
-      
+      <button id="get-times">時間取得</button>
+      <button id="calculate-sleep">睡眠時間計算</button>
       <button id="show-chart">睡眠時間グラフ表示</button> <!-- グラフ表示ボタンの追加 -->
       <div id="response"></div>
       <canvas id="sleepChart" width="800" height="400"></canvas> <!-- グラフ用のキャンバス -->
       <div id="response"></div>
     </main>
 
-    <aside id="left">
-      <button id="get-times">時間取得</button>
-      <button id="calculate-sleep">睡眠時間計算</button>
-      <div id="responseleft"></div>
-    </aside>
+    <!--<aside id="left">
+      
+    </aside>-->
 
     <aside id="right">
       <p>ランキング</p>
@@ -170,9 +167,9 @@
           if (response.ok) {
             const times = await response.json();
 
-            document.getElementById('responseleft').innerText = JSON.stringify(times, null, 2);
+            document.getElementById('response').innerText = JSON.stringify(times, null, 2);
           } else {
-            document.getElementById('responseleft').innerText = 'エラーが発生しました。';
+            document.getElementById('response').innerText = 'エラーが発生しました。';
           }
         } catch (error) {
           console.error('Error getting times:', error);
@@ -217,13 +214,13 @@
               displayText += `${date}: ${sleepDuration}\n`;
             });
 
-            document.getElementById('responseleft').innerText = displayText;
+            document.getElementById('response').innerText = displayText;
           } else {
-            document.getElementById('responseleft').innerText = 'エラーが発生しました。';
+            document.getElementById('response').innerText = 'エラーが発生しました。';
           }
         } catch (error) {
           console.error('Error calculating sleep time:', error);
-          document.getElementById('responseleft').innerText = 'エラーが発生しました。';
+          document.getElementById('response').innerText = 'エラーが発生しました。';
         }
       }
 
