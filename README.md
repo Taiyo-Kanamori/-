@@ -19,5 +19,3 @@
 
 ## Deno DeployのURL
 - https://taiyokanamo-ge-mutaisak-33.deno.dev/
-
-ddd
