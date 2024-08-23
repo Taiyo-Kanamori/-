@@ -87,8 +87,7 @@ serve(async(req) => {
     }
   }
 
-  //睡眠時間
- // 睡眠時間を計算するエンドポイント
+  //睡眠時間の計算
   if (req.method === "GET" && url.pathname === "/calculate-sleep") {
     try {
       const iterator = kv.list({ prefix: [] });
@@ -109,7 +108,6 @@ serve(async(req) => {
       for (const { key, value } of times) {
         const [year, month, day, type] = key;
 
-        // 変更点: 月と日のゼロパディング
         const paddedMonth = month.padStart(2, '0');
         const paddedDay = day.padStart(2, '0');
 
@@ -117,7 +115,6 @@ serve(async(req) => {
         const dateStr = `${year}-${paddedMonth}-${paddedDay}T${timeStr}`;
         const dateTime = new Date(dateStr);
 
-        // 変更点: 日付オブジェクトの有効性チェック
         if (isNaN(dateTime.getTime())) {
           console.error("Invalid date generated from:", dateStr);
           continue;  // 無効な日付が生成された場合はスキップ
@@ -159,7 +156,6 @@ serve(async(req) => {
         }
       }
 
-      // 最後のエントリも確認
       if (sleepTime && wakeTime) {
         const diff = wakeTime.getTime() - sleepTime.getTime();
 
