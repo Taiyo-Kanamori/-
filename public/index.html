@@ -10,7 +10,7 @@
 
   <body>
     <header>
-      <h2>徹夜対策アプリ</h2>
+      <h2>残り時間</h2>
       <h1 id="dif-time"></h1>
       現在時刻 <span id="current-time"></span><br />
       設定時間<input type="time" id="set-time" />
@@ -24,16 +24,15 @@
     
     <main>
       <!--<button id="delete-all">記録削除</button>-->
-      
-      <button id="show-chart">睡眠時間グラフ表示</button>
+      <button id="show-chart">グラフ更新</button>
       <div id="response"></div>
       <canvas id="sleepChart" width="800" height="400"></canvas> <!-- グラフ用のキャンバス -->
       <div id="response"></div>
     </main>
 
     <aside id="left">
-      <button id="get-times">時間取得</button>
-      <button id="calculate-sleep">睡眠時間計算</button>
+      <button id="get-times">今までの記録</button>
+      <button id="calculate-sleep">睡眠時間更新</button>
       <div id="response-left"></div>
     </aside>
 
