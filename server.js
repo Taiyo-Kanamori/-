@@ -147,7 +147,7 @@ serve(async(req) => {
             }
           }
           // リセット
-          currentDate = `${year}-${month}-${day}`;
+          currentDate = `${year}-${paddedMonth}-${paddedDay}`;
           sleepTime = null;
           wakeTime = null;
         }
