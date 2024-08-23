@@ -17,4 +17,7 @@
 - ランキングを睡眠時間が多い順以外に、推奨睡眠時間である7時間に近い順にもソート出来るようにした。
 - デザインを青系に統一してシンプルにした。
 
+## Deno DeployのURL
+- https://taiyokanamo-ge-mutaisak-33.deno.dev/
+
 ddd
