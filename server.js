@@ -89,113 +89,113 @@ serve(async(req) => {
 
   //睡眠時間
  // 睡眠時間を計算するエンドポイント
- if (req.method === "GET" && url.pathname === "/calculate-sleep") {
-  try {
-    const iterator = kv.list({ prefix: [] });
-    const times = [];
+  if (req.method === "GET" && url.pathname === "/calculate-sleep") {
+    try {
+      const iterator = kv.list({ prefix: [] });
+      const times = [];
 
-    for await (const { key, value } of iterator) {
-      times.push({ key, value });
-    }
-
-    // 時間を整形するためにソート（昇順）
-    times.sort((a, b) => a.key.join('-').localeCompare(b.key.join('-')));
-
-    const sleepDurations = [];
-    let sleepTime = null;
-    let wakeTime = null;
-    let currentDate = "";
-
-    for (const { key, value } of times) {
-      const [year, month, day, type] = key;
-
-      // 変更点: 月と日のゼロパディング
-      const paddedMonth = month.padStart(2, '0');
-      const paddedDay = day.padStart(2, '0');
-
-      const timeStr = value;
-      const dateStr = `${year}-${month}-${day}T${timeStr}`;
-      const dateTime = new Date(dateStr);
-
-      // 変更点: 日付オブジェクトの有効性チェック
-      if (isNaN(dateTime.getTime())) {
-        console.error("Invalid date generated from:", dateStr);
-        continue;  // 無効な日付が生成された場合はスキップ
+      for await (const { key, value } of iterator) {
+        times.push({ key, value });
       }
 
+      // 時間を整形するためにソート（昇順）
+      times.sort((a, b) => a.key.join('-').localeCompare(b.key.join('-')));
 
-      // 日付が変わったら、前の日付の睡眠時間を計算
-      if (currentDate !== `${year}-${paddedMonth}-${paddedDay}`) {
-        if (sleepTime && wakeTime) {
-          const diff = wakeTime.getTime() - sleepTime.getTime();
+      const sleepDurations = [];
+      let sleepTime = null;
+      let wakeTime = null;
+      let currentDate = "";
 
-          //wakeTimeがsleepTimeよりも早い場合のチェック
-          if (diff < 0) {
-            console.error("Wake time is before sleep time for the date:", currentDate);
-            sleepDurations.push({
-              date: currentDate,
-              sleepDuration: "データが不正です。",
-            });
-          } else {
-            const hours = Math.floor(diff / (1000 * 60 * 60));
-            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-            sleepDurations.push({
-              date: currentDate,
-              sleepDuration: `${hours}時間 ${minutes}分 ${seconds}秒`,
-            });
-          }
+      for (const { key, value } of times) {
+        const [year, month, day, type] = key;
+
+        // 変更点: 月と日のゼロパディング
+        const paddedMonth = month.padStart(2, '0');
+        const paddedDay = day.padStart(2, '0');
+
+        const timeStr = value;
+        const dateStr = `${year}-${month}-${day}T${timeStr}`;
+        const dateTime = new Date(dateStr);
+
+        // 変更点: 日付オブジェクトの有効性チェック
+        if (isNaN(dateTime.getTime())) {
+          console.error("Invalid date generated from:", dateStr);
+          continue;  // 無効な日付が生成された場合はスキップ
         }
-        // リセット
-        currentDate = `${year}-${month}-${day}`;
-        sleepTime = null;
-        wakeTime = null;
+
+
+        // 日付が変わったら、前の日付の睡眠時間を計算
+        if (currentDate !== `${year}-${paddedMonth}-${paddedDay}`) {
+          if (sleepTime && wakeTime) {
+            const diff = wakeTime.getTime() - sleepTime.getTime();
+
+            //wakeTimeがsleepTimeよりも早い場合のチェック
+            if (diff < 0) {
+              console.error("Wake time is before sleep time for the date:", currentDate);
+              sleepDurations.push({
+                date: currentDate,
+                sleepDuration: "データが不正です。",
+              });
+            } else {
+              const hours = Math.floor(diff / (1000 * 60 * 60));
+              const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+              const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+              sleepDurations.push({
+                date: currentDate,
+                sleepDuration: `${hours}時間 ${minutes}分 ${seconds}秒`,
+              });
+            }
+          }
+          // リセット
+          currentDate = `${year}-${month}-${day}`;
+          sleepTime = null;
+          wakeTime = null;
+        }
+
+        if (type === "sleep") {
+          sleepTime = dateTime;
+        } else if (type === "wake") {
+          wakeTime = dateTime;
+        }
       }
 
-      if (type === "sleep") {
-        sleepTime = dateTime;
-      } else if (type === "wake") {
-        wakeTime = dateTime;
-      }
-    }
+      // 最後のエントリも確認
+      if (sleepTime && wakeTime) {
+        const diff = wakeTime.getTime() - sleepTime.getTime();
 
-    // 最後のエントリも確認
-    if (sleepTime && wakeTime) {
-      const diff = wakeTime.getTime() - sleepTime.getTime();
+        //wakeTimeがsleepTimeよりも早い場合のチェック
+        if (diff < 0) {
+          console.error("Wake time is before sleep time for the date:", currentDate);
+          sleepDurations.push({
+            date: currentDate,
+            sleepDuration: "データが不正です。",
+          });
+        } else {
+          const hours = Math.floor(diff / (1000 * 60 * 60));
+          const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+          const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+          sleepDurations.push({
+            date: currentDate,
+            sleepDuration: `${hours}時間 ${minutes}分 ${seconds}秒`,
+          });
+        }
 
-      //wakeTimeがsleepTimeよりも早い場合のチェック
-      if (diff < 0) {
-        console.error("Wake time is before sleep time for the date:", currentDate);
-        sleepDurations.push({
-          date: currentDate,
-          sleepDuration: "データが不正です。",
-        });
-      } else {
-        const hours = Math.floor(diff / (1000 * 60 * 60));
-        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-        const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-        sleepDurations.push({
-          date: currentDate,
-          sleepDuration: `${hours}時間 ${minutes}分 ${seconds}秒`,
-        });
-      }
-
-    return new Response(JSON.stringify(sleepDurations), {
-      status: 200,
-      headers: { "Content-Type": "application/json" },
-    });
-    }
-  } catch (error) {
-    console.error("Error calculating sleep time:", error.message);
-    return new Response(
-      JSON.stringify({ message: "サーバーエラーが発生しました。" }),
-      {
-        status: 500,
+        return new Response(JSON.stringify(sleepDurations), {
+        status: 200,
         headers: { "Content-Type": "application/json" },
+        });
       }
-    );
+    } catch (error) {
+      console.error("Error calculating sleep time:", error.message);
+      return new Response(
+        JSON.stringify({ message: "サーバーエラーが発生しました。" }),
+        {
+          status: 500,
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+    }
   }
-}
 
 
   return serveDir(req, {
