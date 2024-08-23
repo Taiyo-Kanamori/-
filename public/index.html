@@ -46,8 +46,8 @@
     <div id="modal" class="modal"></div>
     <div id="overlay" class="overlay"></div>
     <script>
+      //全画面表示
       function fullscreen(){
-        //全画面表示
         /*
         console.log("fullscreen");
         document.getElementById('modal-overlay').style.display = 'block';
@@ -68,9 +68,8 @@
           elem.msRequestFullscreen();
         }
       }
-        
-      function updateTime() {
-        //現在時刻表示
+      //現在時刻表示
+      function updateTime() { 
         const now = new Date();
         const hours = String(now.getHours()).padStart(2, '0');
         const minutes = String(now.getMinutes()).padStart(2, '0');
@@ -83,8 +82,8 @@
 
       let settotalseconds = null;
       let difseconds;
+      //決定ボタンを押されたとき設定時間の変更
       function differencetime(){
-        //決定ボタンを押されたとき設定時間の変更
         let settime = document.getElementById('set-time').value;
         if (settime){
           let [sethours, setminutes] = settime.split(':').map(Number);
@@ -95,8 +94,8 @@
         }
       }
 
+      //残り時間の計算、表示
       function diftime() {
-        //残り時間の計算、表示
         let now = new Date();
         let hours = now.getHours();
         let minutes = now.getMinutes();
@@ -125,7 +124,6 @@
         if (difhours === "00" & difminutes ==="00" & difseconds ==="00"){
           console.log("test");
           alert("時間が経過しました");
-          
           fullscreen();
         }
       }
@@ -234,6 +232,23 @@
             });
             document.getElementById('sleep-time-list').innerText = sortedDisplayText;
 
+            // 各日の睡眠時間を7時間に近い順にソート
+            const targetMinutes = 7 * 60; // 7時間を分に換算
+            const closestDurations = sleepDurations.map(({ date, sleepDuration }) => {
+              const parts = sleepDuration.split(' ');
+              const hours = parseInt(parts[0], 10);
+              const minutes = parseInt(parts[2], 10);
+              const totalMinutes = hours * 60 + minutes;
+              const diff = Math.abs(totalMinutes - targetMinutes); // 7時間との差
+              return { date, sleepDuration, diff };
+            }).sort((a, b) => a.diff - b.diff); // 7時間に近い順にソート
+
+            // 7時間に近い順にソートされた結果を表示
+            let closestDisplayText = '7時間に近い順:\n';
+            closestDurations.forEach(({ date, sleepDuration }) => {
+              closestDisplayText += `${date}: ${sleepDuration}\n`;
+            });
+            document.getElementById('closest-sleep-time-list').innerText = closestDisplayText; // 7時間に近い順リストの表示
 
           } else {
             document.getElementById('response-left').innerText = 'エラーが発生しました。';
@@ -319,7 +334,7 @@
         showSleepChart();
       });
       document.getElementById('show-chart').addEventListener('click', () => {
-        showSleepChart(); // グラフ表示ボタンがクリックされたときにデータを更新
+        showSleepChart();
       });
 
 
