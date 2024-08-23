@@ -244,6 +244,9 @@
         }
       }
 
+      window.addEventListener('load', () => {
+        calculateSleepTime();
+      });
       document.getElementById('calculate-sleep').addEventListener('click', () => {
         calculateSleepTime();
       });
