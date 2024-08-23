@@ -116,13 +116,23 @@ serve(async(req) => {
       if (currentDate !== `${year}-${month}-${day}`) {
         if (sleepTime && wakeTime) {
           const diff = wakeTime.getTime() - sleepTime.getTime();
-          const hours = Math.floor(diff / (1000 * 60 * 60));
-          const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-          const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-          sleepDurations.push({
-            date: currentDate,
-            sleepDuration: `${hours}時間 ${minutes}分 ${seconds}秒`,
-          });
+
+          //wakeTimeがsleepTimeよりも早い場合のチェック
+          if (diff < 0) {
+            console.error("Wake time is before sleep time for the date:", currentDate);
+            sleepDurations.push({
+              date: currentDate,
+              sleepDuration: "データが不正です。",
+            });
+          } else {
+            const hours = Math.floor(diff / (1000 * 60 * 60));
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+            sleepDurations.push({
+              date: currentDate,
+              sleepDuration: `${hours}時間 ${minutes}分 ${seconds}秒`,
+            });
+          }
         }
         // リセット
         currentDate = `${year}-${month}-${day}`;
@@ -140,20 +150,29 @@ serve(async(req) => {
     // 最後のエントリも確認
     if (sleepTime && wakeTime) {
       const diff = wakeTime.getTime() - sleepTime.getTime();
-      const hours = Math.floor(diff / (1000 * 60 * 60));
-      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-      const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-      sleepDurations.push({
-        date: currentDate,
-        sleepDuration: `${hours}時間 ${minutes}分 ${seconds}秒`,
-      });
-    }
+
+      //wakeTimeがsleepTimeよりも早い場合のチェック
+      if (diff < 0) {
+        console.error("Wake time is before sleep time for the date:", currentDate);
+        sleepDurations.push({
+          date: currentDate,
+          sleepDuration: "データが不正です。",
+        });
+      } else {
+        const hours = Math.floor(diff / (1000 * 60 * 60));
+        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+        sleepDurations.push({
+          date: currentDate,
+          sleepDuration: `${hours}時間 ${minutes}分 ${seconds}秒`,
+        });
+      }
 
     return new Response(JSON.stringify(sleepDurations), {
       status: 200,
       headers: { "Content-Type": "application/json" },
     });
-
+    }
   } catch (error) {
     console.error("Error calculating sleep time:", error.message);
     return new Response(
