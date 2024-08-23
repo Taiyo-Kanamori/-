@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>徹夜対策アプリ</title>
     <link rel="stylesheet" href="kanamori.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- Chart.js の追加 -->
   </head>
 
   <body>
@@ -23,6 +24,9 @@
       <!--<button id="delete-all">記録削除</button>-->
       <button id="get-times">時間取得</button>
       <button id="calculate-sleep">睡眠時間計算</button>
+      <button id="show-chart">睡眠時間グラフ表示</button> <!-- グラフ表示ボタンの追加 -->
+      <div id="response"></div>
+      <canvas id="sleepChart" width="800" height="400"></canvas> <!-- グラフ用のキャンバス -->
       <div id="response"></div>
     </main>
 
@@ -85,92 +89,91 @@
 
       function diftime() {
         //残り時間の計算、表示
-          let now = new Date();
-          let hours = now.getHours();
-          let minutes = now.getMinutes();
-          let seconds = now.getSeconds();
-          let difhours,difminutes;
-          if (settotalseconds === null){
-            difhours = "--";
-            difminutes = "--";
-            difseconds = "--";
+        let now = new Date();
+        let hours = now.getHours();
+        let minutes = now.getMinutes();
+        let seconds = now.getSeconds();
+        let difhours,difminutes;
+        if (settotalseconds === null){
+          difhours = "--";
+          difminutes = "--";
+          difseconds = "--";
+        }else{
+          let totalseconds = hours*3600+minutes*60+seconds;
+          difseconds = settotalseconds - totalseconds;
+          if (difseconds < 0){
+            difseconds += 24*3600;
           }
-          else{
-            let totalseconds = hours*3600+minutes*60+seconds;
-            difseconds = settotalseconds - totalseconds;
-            if (difseconds < 0){
-              difseconds += 24*3600;
-            }
-            difhours = Math.floor(difseconds / 3600);
-            difseconds %= 3600;
-            difminutes = Math.floor(difseconds / 60);
-            difseconds %= 60;
-            difhours = String(difhours).padStart(2, '0');
-            difminutes = String(difminutes).padStart(2, '0');
-            difseconds = String(difseconds).padStart(2, '0');
-          }
-          document.getElementById('dif-time').textContent = `${difhours}:${difminutes}:${difseconds}`;
+          difhours = Math.floor(difseconds / 3600);
+          difseconds %= 3600;
+          difminutes = Math.floor(difseconds / 60);
+          difseconds %= 60;
+          difhours = String(difhours).padStart(2, '0');
+          difminutes = String(difminutes).padStart(2, '0');
+          difseconds = String(difseconds).padStart(2, '0');
+        }
+        document.getElementById('dif-time').textContent = `${difhours}:${difminutes}:${difseconds}`;
           
-          if (difhours === "00" & difminutes ==="00" & difseconds ==="00"){
-            console.log("test");
-            alert("時間が経過しました");
-            
-            fullscreen();
-          }
+        if (difhours === "00" & difminutes ==="00" & difseconds ==="00"){
+          console.log("test");
+          alert("時間が経過しました");
+          
+          fullscreen();
         }
-        setInterval(diftime, 1000);
+      }
+      setInterval(diftime, 1000);
 
-        //時間記録
-        async function recordTime(type) {
-          const currentTime = new Date().toISOString();
-          try {
-            const response = await fetch('/record-time', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ type, time: currentTime })
-            });
+      //時間記録
+      async function recordTime(type) {
+        const currentTime = new Date().toISOString();
+        try {
+          const response = await fetch('/record-time', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ type, time: currentTime })
+          });
 
-            if (response.ok) {
-                const data = await response.json();
-                document.getElementById('response').innerText = data.message;
-            } else {
-                document.getElementById('response').innerText = 'エラーが発生しました。';
-            }
-          } catch (error) {
-            console.error('Error recording time:', error);
+          if (response.ok) {
+            const data = await response.json();
+            document.getElementById('response').innerText = data.message;
+          } else {
+            document.getElementById('response').innerText = 'エラーが発生しました。';
           }
+        } catch (error) {
+          console.error('Error recording time:', error);
         }
+      }
 
-        document.getElementById('recordwake').addEventListener('click', () => {
-            recordTime('wake');
-        });
-        document.getElementById('recordsleep').addEventListener('click', () => {
-            recordTime('sleep');
-        });
+      document.getElementById('recordwake').addEventListener('click', () => {
+        recordTime('wake');
+      });
+      document.getElementById('recordsleep').addEventListener('click', () => {
+        recordTime('sleep');
+      });
 
-        //時間取得
-        async function getAllTimes() {
-          try {
-            const response = await fetch('/get-times',{
-              method: 'GET',
-            });
+      //時間取得
+      async function getAllTimes() {
+        try {
+          const response = await fetch('/get-times',{
+            method: 'GET',
+          });
              
-            if (response.ok) {
-              const times = await response.json();
+          if (response.ok) {
+            const times = await response.json();
 
-              document.getElementById('response').innerText = JSON.stringify(times, null, 2);
-            } else {
-              document.getElementById('response').innerText = 'エラーが発生しました。';
-            }
-          } catch (error) {
-            console.error('Error getting times:', error);
+            document.getElementById('response').innerText = JSON.stringify(times, null, 2);
+          } else {
+            document.getElementById('response').innerText = 'エラーが発生しました。';
           }
+        } catch (error) {
+          console.error('Error getting times:', error);
         }
-        document.getElementById('get-times').addEventListener('click', () => {
-          getAllTimes();
-        });
+      }
+      document.getElementById('get-times').addEventListener('click', () => {
+        getAllTimes();
+      });
         
         //記録削除
         /*
@@ -193,33 +196,97 @@
         });
         */
 
-        // 睡眠時間計算
-        async function calculateSleepTime() {
+      // 睡眠時間計算
+      async function calculateSleepTime() {
         try {
           const response = await fetch('/calculate-sleep', {
           method: 'GET',
           });
 
-        if (response.ok) {
-          const sleepDurations = await response.json();
-          let displayText = '各日の睡眠時間:\n';
-          sleepDurations.forEach(({ date, sleepDuration }) => {
-            displayText += `${date}: ${sleepDuration}\n`;
-          });
+          if (response.ok) {
+            const sleepDurations = await response.json();
+            let displayText = '各日の睡眠時間:\n';
+            sleepDurations.forEach(({ date, sleepDuration }) => {
+              displayText += `${date}: ${sleepDuration}\n`;
+            });
 
-          document.getElementById('response').innerText = displayText;
-        } else {
-          document.getElementById('response').innerText = 'エラーが発生しました。';
-        }
+            document.getElementById('response').innerText = displayText;
+          } else {
+            document.getElementById('response').innerText = 'エラーが発生しました。';
+          }
         } catch (error) {
           console.error('Error calculating sleep time:', error);
           document.getElementById('response').innerText = 'エラーが発生しました。';
         }
-        }
+      }
 
-        document.getElementById('calculate-sleep').addEventListener('click', () => {
-          calculateSleepTime();
-        });
+      document.getElementById('calculate-sleep').addEventListener('click', () => {
+        calculateSleepTime();
+      });
+
+      // 睡眠時間グラフ表示
+      async function showSleepChart() {
+        try {
+          const response = await fetch('/calculate-sleep', {
+            method: 'GET',
+          });
+
+          if (response.ok) {
+            const sleepDurations = await response.json();
+            const dates = sleepDurations.map(entry => entry.date);
+            const durations = sleepDurations.map(entry => {
+              const parts = entry.sleepDuration.split(' ');
+              const hours = parseInt(parts[0]);
+              const minutes = parseInt(parts[2]);
+              return hours * 60 + minutes; // Convert to minutes
+            });
+
+            const ctx = document.getElementById('sleepChart').getContext('2d');
+            new Chart(ctx, {
+              type: 'line',
+              data: {
+                labels: dates,
+                datasets: [{
+                  label: '睡眠時間（分）',
+                  data: durations,
+                  borderColor: 'rgba(75, 192, 192, 1)',
+                  backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                  borderWidth: 1,
+                }],
+              },
+              options: {
+                scales: {
+                  x: {
+                    title: {
+                      display: true,
+                      text: '日付',
+                    },
+                  },
+                  y: {
+                    title: {
+                      display: true,
+                      text: '睡眠時間（分）',
+                    },
+                    beginAtZero: true,
+                  },
+                },
+              },
+            });
+          } else {
+            document.getElementById('response').innerText = 'エラーが発生しました。';
+          }
+        } catch (error) {
+          console.error('Error showing sleep chart:', error);
+          document.getElementById('response').innerText = 'エラーが発生しました。';
+        }
+      }
+
+      document.getElementById('show-chart').addEventListener('click', () => {
+        showSleepChart();
+      });
+
+
+
       </script>
   </body>
 </html>
