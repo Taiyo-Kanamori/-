@@ -19,3 +19,7 @@
 
 ## Deno DeployのURL
 - https://taiyokanamo-ge-mutaisak-33.deno.dev/
+
+## 実装したかった要素
+- PCの操作を不能にする機能
+- 自動操作による全画面表示、音声出力
