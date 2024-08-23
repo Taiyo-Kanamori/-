@@ -125,7 +125,7 @@ serve(async(req) => {
 
 
       // 日付が変わったら、前の日付の睡眠時間を計算
-      if (currentDate !== `${year}-${month}-${day}`) {
+      if (currentDate !== `${year}-${paddedMonth}-${paddedDay}`) {
         if (sleepTime && wakeTime) {
           const diff = wakeTime.getTime() - sleepTime.getTime();
 
