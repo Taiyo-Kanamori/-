@@ -191,14 +191,30 @@
           deleteAllTimes();
         });
 
-        //睡眠時間計算
+        // 睡眠時間計算
         async function calculateSleepTime() {
+        try {
           const response = await fetch('/calculate-sleep', {
-            method: 'GET',
+          method: 'GET',
           });
-          const data = await response.json();
-          document.getElementById('response').innerText = `睡眠時間: ${data.sleepDuration}`;
+
+        if (response.ok) {
+          const sleepDurations = await response.json();
+          let displayText = '各日の睡眠時間:\n';
+          sleepDurations.forEach(({ date, sleepDuration }) => {
+            displayText += `${date}: ${sleepDuration}\n`;
+          });
+
+          document.getElementById('response').innerText = displayText;
+        } else {
+          document.getElementById('response').innerText = 'エラーが発生しました。';
         }
+        } catch (error) {
+          console.error('Error calculating sleep time:', error);
+          document.getElementById('response').innerText = 'エラーが発生しました。';
+        }
+        }
+
         document.getElementById('calculate-sleep').addEventListener('click', () => {
           calculateSleepTime();
         });
