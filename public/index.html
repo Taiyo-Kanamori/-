@@ -34,7 +34,7 @@
     <aside id="left">
       <button id="get-times">時間取得</button>
       <button id="calculate-sleep">睡眠時間計算</button>
-      <div id="responseleft"></div>
+      <div id="response-left"></div>
     </aside>
 
     <aside id="right">
@@ -170,9 +170,9 @@
           if (response.ok) {
             const times = await response.json();
 
-            document.getElementById('responseleft').innerText = JSON.stringify(times, null, 2);
+            document.getElementById('response-left').innerText = JSON.stringify(times, null, 2);
           } else {
-            document.getElementById('responseleft').innerText = 'エラーが発生しました。';
+            document.getElementById('response-left').innerText = 'エラーが発生しました。';
           }
         } catch (error) {
           console.error('Error getting times:', error);
@@ -217,9 +217,9 @@
               displayText += `${date}: ${sleepDuration}\n`;
             });
 
-            document.getElementById('responseleft').innerText = displayText;
+            document.getElementById('response-left').innerText = displayText;
           } else {
-            document.getElementById('responseleft').innerText = 'エラーが発生しました。';
+            document.getElementById('response-left').innerText = 'エラーが発生しました。';
           }
         } catch (error) {
           console.error('Error calculating sleep time:', error);
