@@ -88,8 +88,8 @@ serve(async(req) => {
   }
 
   //睡眠時間
-  // 時間の計算処理
-if (req.method === "GET" && url.pathname === "/calculate-sleep") {
+ // 睡眠時間を計算するエンドポイント
+ if (req.method === "GET" && url.pathname === "/calculate-sleep") {
   try {
     const iterator = kv.list({ prefix: [] });
     const times = [];
@@ -101,14 +101,34 @@ if (req.method === "GET" && url.pathname === "/calculate-sleep") {
     // 時間を整形するためにソート（昇順）
     times.sort((a, b) => a.key.join('-').localeCompare(b.key.join('-')));
 
+    const sleepDurations = [];
     let sleepTime = null;
     let wakeTime = null;
+    let currentDate = "";
 
     for (const { key, value } of times) {
       const [year, month, day, type] = key;
       const timeStr = value;
       const dateStr = `${year}-${month}-${day}T${timeStr}`;
       const dateTime = new Date(dateStr);
+
+      // 日付が変わったら、前の日付の睡眠時間を計算
+      if (currentDate !== `${year}-${month}-${day}`) {
+        if (sleepTime && wakeTime) {
+          const diff = wakeTime.getTime() - sleepTime.getTime();
+          const hours = Math.floor(diff / (1000 * 60 * 60));
+          const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+          const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+          sleepDurations.push({
+            date: currentDate,
+            sleepDuration: `${hours}時間 ${minutes}分 ${seconds}秒`,
+          });
+        }
+        // リセット
+        currentDate = `${year}-${month}-${day}`;
+        sleepTime = null;
+        wakeTime = null;
+      }
 
       if (type === "sleep") {
         sleepTime = dateTime;
@@ -117,28 +137,23 @@ if (req.method === "GET" && url.pathname === "/calculate-sleep") {
       }
     }
 
+    // 最後のエントリも確認
     if (sleepTime && wakeTime) {
       const diff = wakeTime.getTime() - sleepTime.getTime();
       const hours = Math.floor(diff / (1000 * 60 * 60));
       const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
       const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-
-      return new Response(
-        JSON.stringify({ sleepDuration: `${hours}時間 ${minutes}分 ${seconds}秒` }),
-        {
-          status: 200,
-          headers: { "Content-Type": "application/json" },
-        }
-      );
-    } else {
-      return new Response(
-        JSON.stringify({ message: "睡眠時間のデータが不足しています。" }),
-        {
-          status: 400,
-          headers: { "Content-Type": "application/json" },
-        }
-      );
+      sleepDurations.push({
+        date: currentDate,
+        sleepDuration: `${hours}時間 ${minutes}分 ${seconds}秒`,
+      });
     }
+
+    return new Response(JSON.stringify(sleepDurations), {
+      status: 200,
+      headers: { "Content-Type": "application/json" },
+    });
+
   } catch (error) {
     console.error("Error calculating sleep time:", error.message);
     return new Response(
