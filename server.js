@@ -108,9 +108,21 @@ serve(async(req) => {
 
     for (const { key, value } of times) {
       const [year, month, day, type] = key;
+
+      // 変更点: 月と日のゼロパディング
+      const paddedMonth = month.padStart(2, '0');
+      const paddedDay = day.padStart(2, '0');
+
       const timeStr = value;
       const dateStr = `${year}-${month}-${day}T${timeStr}`;
       const dateTime = new Date(dateStr);
+
+      // 変更点: 日付オブジェクトの有効性チェック
+      if (isNaN(dateTime.getTime())) {
+        console.error("Invalid date generated from:", dateStr);
+        continue;  // 無効な日付が生成された場合はスキップ
+      }
+
 
       // 日付が変わったら、前の日付の睡眠時間を計算
       if (currentDate !== `${year}-${month}-${day}`) {
