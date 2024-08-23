@@ -114,7 +114,7 @@ serve(async(req) => {
         const paddedDay = day.padStart(2, '0');
 
         const timeStr = value;
-        const dateStr = `${year}-${month}-${day}T${timeStr}`;
+        const dateStr = `${year}-${paddedMonth}-${paddedDay}T${timeStr}`;
         const dateTime = new Date(dateStr);
 
         // 変更点: 日付オブジェクトの有効性チェック
