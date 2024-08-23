@@ -32,8 +32,8 @@ main {
 
 aside#left {
   grid-area: left;
-  background-color: #00000000;
-  color: white;
+  background-color: #ffffff;
+  color: rgba(0, 0, 0, 0);
   padding: 20px;
 }
 
