@@ -312,6 +312,9 @@
         }
       }
 
+      window.addEventListener('load', () => {
+        showSleepChart();
+      });
       document.getElementById('show-chart').addEventListener('click', () => {
         showSleepChart(); // グラフ表示ボタンがクリックされたときにデータを更新
       });
