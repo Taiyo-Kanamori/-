@@ -30,6 +30,14 @@ main {
   padding: 20px;
 }
 
+aside#left {
+  grid-area: left;
+  background-color: #ffffff;
+  color: white;
+  padding: 20px;
+  text-align: center;
+}
+
 aside#right {
   grid-area: right;
   background-color: #2397f5;
